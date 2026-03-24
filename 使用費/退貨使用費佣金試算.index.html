@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<title>試算工具</title>
+<style>
+  body { font-family: Arial; padding: 20px; background: #f5f5f5; }
+  .box { background: white; padding: 20px; border-radius: 10px; max-width: 400px; }
+  input { width: 100%; padding: 8px; margin: 5px 0 10px; }
+  .result { margin-top: 15px; padding: 10px; background: #eef; }
+</style>
+</head>
+<body>
+
+<div class="box">
+  <h2>退貨使用費佣金試算</h2>
+
+  訂單編號:
+  <input id="order">
+
+  客戶:
+  <input id="customer">
+
+  使用月數 (N):
+  <input id="months" type="number">
+
+  每期金額 (X):
+  <input id="amount" type="number">
+
+  <button onclick="calculate()">計算</button>
+
+  <div class="result" id="result"></div>
+</div>
+
+<script>
+function calculate() {
+  let order = document.getElementById("order").value;
+  let customer = document.getElementById("customer").value;
+  let N = parseFloat(document.getElementById("months").value);
+  let X = parseFloat(document.getElementById("amount").value);
+
+  if (!N || !X) {
+    alert("請輸入完整數值");
+    return;
+  }
+
+  let total = X * N;
+  let commission = N *X - (0.3 * X * (N + 6)) - (0.3 * X);
+
+  document.getElementById("result").innerHTML = `
+    訂單編號：${order}<br>
+    客戶：${customer}<br>
+    使用費：${total.toLocaleString()}<br>
+    使用費佣金：${Math.round(commission).toLocaleString()}<br><br>
+    <small>以上僅供參考</small>
+  `;
+}
+</script>
+
+</body>
+</html>
