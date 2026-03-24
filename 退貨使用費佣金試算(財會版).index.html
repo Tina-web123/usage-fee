@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<title>退貨使用費試算工具_財會版</title>
+<style>
+  body { font-family: Arial; padding: 20px; background: #f5f5f5; }
+  .box { background: white; padding: 20px; border-radius: 10px; max-width: 420px; }
+  input { width: 100%; padding: 8px; margin: 5px 0 10px; }
+  button { padding: 10px; width: 100%; }
+  .result { margin-top: 15px; padding: 10px; background: #eef; }
+</style>
+</head>
+<body>
+
+<div class="box">
+  <h2>退貨使用費佣金試算_財會版</h2>
+
+  訂單編號:
+  <input id="order">
+
+  客戶:
+  <input id="customer">
+
+  出貨日期:
+  <input id="shipDate" type="date">
+
+  單位詢問日期:
+  <input id="inquiryDate" type="date">
+
+  每期金額 (X):
+  <input id="amount" type="number">
+
+  <button onclick="calculate()">計算</button>
+
+  <div class="result" id="result"></div>
+</div>
+
+<script>
+function calculate() {
+  let order = document.getElementById("order").value;
+  let customer = document.getElementById("customer").value;
+  let shipDate = new Date(document.getElementById("shipDate").value);
+  let inquiryDate = new Date(document.getElementById("inquiryDate").value);
+  let X = parseFloat(document.getElementById("amount").value);
+
+  if (!order || !customer || !X || isNaN(shipDate) || isNaN(inquiryDate)) {
+    alert("請填寫完整資料");
+    return;
+  }
+
+  // 📅 鑑賞期結束日 = 出貨 + 8天
+  let endDate = new Date(shipDate);
+  endDate.setDate(endDate.getDate() + 8);
+
+  // 📆 天數差（+1天）
+  let diffTime = inquiryDate - endDate;
+  let diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1;
+
+  if (diffDays < 0) diffDays = 0;
+
+  // 🧮 使用月數（無條件進位）
+  let N = Math.ceil(diffDays / 30);
+  if (N < 1) N = 1;
+
+  // 💰 使用費
+  let total = X * N;
+
+  // 🔥 你的佣金公式（最新版）
+  let commission = N * X - (0.3 * X * (N + 6)) - (0.3 * X);
+
+  // 📅 日期格式
+  function formatDate(d) {
+    let y = d.getFullYear();
+    let m = String(d.getMonth() + 1).padStart(2, '0');
+    let day = String(d.getDate()).padStart(2, '0');
+    return `${y}/${m}/${day}`;
+  }
+
+  document.getElementById("result").innerHTML = `
+    訂單編號：${order}<br>
+    客戶：${customer}<br>
+    出貨日期：${formatDate(shipDate)}<br>
+    鑑賞期結束日：${formatDate(endDate)}<br>
+    單位詢問日期：${formatDate(inquiryDate)}<br><br>
+
+    使用月數：${N} 月<br>
+    每期金額：${X.toLocaleString()}<br>
+    使用費：${total.toLocaleString()}<br>
+    使用費佣金：${Math.round(commission).toLocaleString()}<br><br>
+
+    <small>以上僅供參考</small>
+  `;
+}
+</script>
+
+</body>
+</html>
