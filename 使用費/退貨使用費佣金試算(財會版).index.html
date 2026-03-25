@@ -67,8 +67,12 @@ function calculate() {
   let total = X * N;
 
   // 🔥 你的佣金公式（最新版）
-  let commission = N * X - (0.3 * X * (N + 6)) - (0.3 * X);
+  let commission = 0;
 
+  if (N > 6) {
+    commission = N * X - (0.3 * X * (N + 6)) - (0.3 * X);
+  }
+  
   // 📅 日期格式
   function formatDate(d) {
     let y = d.getFullYear();
