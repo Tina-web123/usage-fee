@@ -91,8 +91,11 @@ function calculate() {
     使用月數：${N} 月<br>
     每期金額：${X.toLocaleString()}<br>
     使用費：${total.toLocaleString()}<br>
-    使用費佣金：${Math.round(commission).toLocaleString()}<br><br>
-
+    使用費佣金：
+    <span style="color:${commission === 0 ? 'red' : 'green'}">
+      ${commission === 0 ? "0（未達7個月）" : commission.toLocaleString()}
+    </span>
+    
     <small>以上僅供參考</small>
   `;
 }
